@@ -110,6 +110,7 @@ BEGIN_JUCE_NAMESPACE
  #if JUCE_DIRECT2D
   #include "native/juce_win32_Direct2DGraphicsContext.cpp"
  #endif
+ #include "native/juce_win32_DirectWrite.h"
  #include "native/juce_win32_DirectWriteTypeface.cpp"
  #include "native/juce_win32_DirectWriteTypeLayout.cpp"
  #include "native/juce_win32_Fonts.cpp"

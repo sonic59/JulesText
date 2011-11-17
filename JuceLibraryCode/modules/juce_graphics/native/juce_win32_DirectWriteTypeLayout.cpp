@@ -23,32 +23,6 @@
   ==============================================================================
 */
 
-class SharedDirectWriteFactory  : public DeletedAtShutdown
-{
-public:
-    SharedDirectWriteFactory()
-    {
-        D2D1CreateFactory (D2D1_FACTORY_TYPE_SINGLE_THREADED, d2dFactory.resetAndGetPointerAddress());
-        DWriteCreateFactory (DWRITE_FACTORY_TYPE_SHARED, __uuidof (IDWriteFactory), (IUnknown**) directWriteFactory.resetAndGetPointerAddress());
-
-        if (directWriteFactory != nullptr)
-            directWriteFactory->GetSystemFontCollection (systemFonts.resetAndGetPointerAddress());
-    }
-
-    ~SharedDirectWriteFactory()
-    {
-        clearSingletonInstance();
-    }
-
-    juce_DeclareSingleton (SharedDirectWriteFactory, false);
-
-    ComSmartPtr <ID2D1Factory> d2dFactory;
-    ComSmartPtr <IDWriteFactory> directWriteFactory;
-    ComSmartPtr <IDWriteFontCollection> systemFonts;
-};
-
-juce_ImplementSingleton (SharedDirectWriteFactory)
-
 class CustomDirectWriteTextRenderer   : public ComBaseClassHelper <IDWriteTextRenderer>
 {
 public:
@@ -56,11 +30,6 @@ public:
         : currentLine (-1),
           lastOriginY (-10000.0f)
     {
-        DWriteCreateFactory (DWRITE_FACTORY_TYPE_SHARED, __uuidof (IDWriteFactory),
-                             (IUnknown**) dwFactory.resetAndGetPointerAddress());
-
-        dwFactory->GetSystemFontCollection (dwFontCollection.resetAndGetPointerAddress());
-
         resetReferenceCount();
     }
 
@@ -150,8 +119,6 @@ public:
 
 private:
     UINT refCount;
-    ComSmartPtr<IDWriteFactory> dwFactory;
-    ComSmartPtr<IDWriteFontCollection> dwFontCollection;
     int currentLine;
     float lastOriginY;
 
@@ -171,7 +138,8 @@ private:
     String getFontName (DWRITE_GLYPH_RUN const* glyphRun, int& styleFlags) const
     {
         ComSmartPtr<IDWriteFont> dwFont;
-        HRESULT hr = dwFontCollection->GetFontFromFontFace (glyphRun->fontFace, dwFont.resetAndGetPointerAddress());
+
+        HRESULT hr = SharedDirectWriteFactory::getInstance()->systemFonts->GetFontFromFontFace (glyphRun->fontFace, dwFont.resetAndGetPointerAddress());
         jassert (dwFont != nullptr);
 
         if (dwFont->GetWeight() == DWRITE_FONT_WEIGHT_BOLD) styleFlags &= Font::bold;
@@ -236,17 +204,8 @@ namespace DirectWriteTypeLayout
 
     void createLayout (GlyphLayout& glyphLayout, const AttributedString& text)
     {
-        ComSmartPtr<IDWriteFactory> dwFactory;
-        HRESULT hr = DWriteCreateFactory (DWRITE_FACTORY_TYPE_SHARED, __uuidof (IDWriteFactory),
-                                          (IUnknown**) dwFactory.resetAndGetPointerAddress());
-
-        ComSmartPtr<IDWriteFontCollection> dwFontCollection;
-        hr = dwFactory->GetSystemFontCollection (dwFontCollection.resetAndGetPointerAddress());
-
         // To add color to text, we need to create a D2D render target
         // Since we are not actually rendering to a D2D context we create a temporary GDI render target
-        ComSmartPtr<ID2D1Factory> d2dFactory;
-        hr = D2D1CreateFactory (D2D1_FACTORY_TYPE_SINGLE_THREADED, d2dFactory.resetAndGetPointerAddress());
 
         D2D1_RENDER_TARGET_PROPERTIES d2dRTProp = D2D1::RenderTargetProperties (D2D1_RENDER_TARGET_TYPE_SOFTWARE,
                                                                                 D2D1::PixelFormat (DXGI_FORMAT_B8G8R8A8_UNORM,
@@ -255,14 +214,14 @@ namespace DirectWriteTypeLayout
                                                                                 D2D1_RENDER_TARGET_USAGE_GDI_COMPATIBLE,
                                                                                 D2D1_FEATURE_LEVEL_DEFAULT);
         ComSmartPtr<ID2D1DCRenderTarget> d2dDCRT;
-        hr = d2dFactory->CreateDCRenderTarget (&d2dRTProp, d2dDCRT.resetAndGetPointerAddress());
+        HRESULT hr = SharedDirectWriteFactory::getInstance()->d2dFactory->CreateDCRenderTarget (&d2dRTProp, d2dDCRT.resetAndGetPointerAddress());
 
         Font defaultFont;
-        const float defaultFontHeightToEmSizeFactor = getFontHeightToEmSizeFactor (defaultFont, *dwFontCollection);
+        const float defaultFontHeightToEmSizeFactor = getFontHeightToEmSizeFactor (defaultFont, *SharedDirectWriteFactory::getInstance()->systemFonts);
 
         ComSmartPtr<IDWriteTextFormat> dwTextFormat;
-        hr = dwFactory->CreateTextFormat (defaultFont.getTypefaceName().toWideCharPointer(),
-                                          dwFontCollection,
+        hr = SharedDirectWriteFactory::getInstance()->directWriteFactory->CreateTextFormat (defaultFont.getTypefaceName().toWideCharPointer(),
+                                          SharedDirectWriteFactory::getInstance()->systemFonts,
                                           DWRITE_FONT_WEIGHT_REGULAR,
                                           DWRITE_FONT_STYLE_NORMAL,
                                           DWRITE_FONT_STRETCH_NORMAL,
@@ -290,7 +249,7 @@ namespace DirectWriteTypeLayout
         const int textLen = text.getText().length();
 
         ComSmartPtr<IDWriteTextLayout> dwTextLayout;
-        hr = dwFactory->CreateTextLayout (text.getText().toWideCharPointer(), textLen,
+        hr = SharedDirectWriteFactory::getInstance()->directWriteFactory->CreateTextLayout (text.getText().toWideCharPointer(), textLen,
                                           dwTextFormat,
                                           glyphLayout.area.getWidth(),
                                           glyphLayout.area.getHeight(),
@@ -317,7 +276,7 @@ namespace DirectWriteTypeLayout
                 {
                     dwTextLayout->SetFontFamilyName (attr->getFont()->getTypefaceName().toWideCharPointer(), dwRange);
 
-                    const float fontHeightToEmSizeFactor = getFontHeightToEmSizeFactor (*attr->getFont(), *dwFontCollection);
+                    const float fontHeightToEmSizeFactor = getFontHeightToEmSizeFactor (*attr->getFont(), *SharedDirectWriteFactory::getInstance()->systemFonts);
                     dwTextLayout->SetFontSize (attr->getFont()->getHeight() * fontHeightToEmSizeFactor, dwRange);
                 }
 

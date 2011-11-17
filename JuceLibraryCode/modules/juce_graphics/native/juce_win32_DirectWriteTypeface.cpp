@@ -31,16 +31,11 @@ public:
         : Typeface (font.getTypefaceName()),
           ascent (0.0f)
     {
-        ComSmartPtr<IDWriteFactory> dwFactory;
-        HRESULT hr = DWriteCreateFactory (DWRITE_FACTORY_TYPE_SHARED, __uuidof(IDWriteFactory),
-                                          (IUnknown**) dwFactory.resetAndGetPointerAddress());
-
-        ComSmartPtr<IDWriteFontCollection> dwFontCollection;
-        hr = dwFactory->GetSystemFontCollection (dwFontCollection.resetAndGetPointerAddress());
+        IDWriteFontCollection* dwFontCollection = SharedDirectWriteFactory::getInstance()->systemFonts;
 
         BOOL fontFound;
         uint32 fontIndex;
-        hr = dwFontCollection->FindFamilyName (font.getTypefaceName().toWideCharPointer(), &fontIndex, &fontFound);
+        HRESULT hr = dwFontCollection->FindFamilyName (font.getTypefaceName().toWideCharPointer(), &fontIndex, &fontFound);
         if (! fontFound)
             fontIndex = 0;
 
