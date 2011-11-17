@@ -1,0 +1,18 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+Project("{991B1E13-2CAD-8DBD-A2BC-193D37998B92}") = "JuceText", "JuceText.vcxproj", "{262B3985-F2D2-62A1-35FA-4836C9D24253}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{262B3985-F2D2-62A1-35FA-4836C9D24253}.Debug|Win32.ActiveCfg = Debug|Win32
+		{262B3985-F2D2-62A1-35FA-4836C9D24253}.Debug|Win32.Build.0 = Debug|Win32
+		{262B3985-F2D2-62A1-35FA-4836C9D24253}.Release|Win32.ActiveCfg = Release|Win32
+		{262B3985-F2D2-62A1-35FA-4836C9D24253}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
