@@ -136,8 +136,11 @@ private:
             return Colours::black;
 
         ID2D1SolidColorBrush* d2dBrush = static_cast<ID2D1SolidColorBrush*> (clientDrawingEffect);
-        const D2D1_COLOR_F col (d2dBrush->GetColor());
-        return Colour::fromFloatRGBA (col.r, col.g, col.b, col.a);
+        uint8 r = (uint8) (d2dBrush->GetColor().r * 255);
+        uint8 g = (uint8) (d2dBrush->GetColor().g * 255);
+        uint8 b = (uint8) (d2dBrush->GetColor().b * 255);
+        uint8 a = (uint8) (d2dBrush->GetColor().a * 255);
+        return Colour::fromRGBA(r, g, b, a);
     }
 
     String getFontName (DWRITE_GLYPH_RUN const* glyphRun, int& styleFlags) const
