@@ -383,7 +383,7 @@ void WindowComponent::readXMLLayout(String xmlFile, Label* labelOne, LayoutLabel
 
 void WindowComponent::readXMLFrame(String xmlFile, Label* labelOne, FrameLabel* labelTwo)
 {
-    String xmlPath = File::getSpecialLocation(File::userHomeDirectory).getFullPathName();
+    String xmlPath = "D:"; // Mac Path: File::getSpecialLocation(File::userHomeDirectory).getFullPathName();
     xmlPath += "/Projects/JulesText/SampleText/";
     XmlDocument myDocument (File (xmlPath + xmlFile));
     ScopedPointer<XmlElement> xml (myDocument.getDocumentElement());
