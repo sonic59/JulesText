@@ -340,7 +340,7 @@ void WindowComponent::buttonClicked (Button* buttonThatWasClicked)
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
 void WindowComponent::readXMLLayout(String xmlFile, Label* labelOne, LayoutLabel* labelTwo)
 {
-    String xmlPath = File::getSpecialLocation(File::userHomeDirectory).getFullPathName();
+    String xmlPath = "D:"; // Mac Path: File::getSpecialLocation(File::userHomeDirectory).getFullPathName();
     xmlPath += "/Projects/JuceText/SampleText/";
     XmlDocument myDocument (File (xmlPath + xmlFile));
     ScopedPointer<XmlElement> xml (myDocument.getDocumentElement());
