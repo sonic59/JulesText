@@ -330,8 +330,9 @@ namespace DirectWriteTypeLayout
             glyphLine->setStringRange (lineStringRange);
         }
 
+        ComSmartPtr<CustomDirectWriteTextRenderer> textRenderer = new CustomDirectWriteTextRenderer();
         hr = dwTextLayout->Draw (&glyphLayout,
-                                 new CustomDirectWriteTextRenderer(),
+                                 textRenderer,
                                  glyphLayout.area.getX(),
                                  glyphLayout.area.getY());
     }
