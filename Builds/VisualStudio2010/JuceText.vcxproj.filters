@@ -996,22 +996,13 @@
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_graphics\fonts\juce_GlyphLayout.cpp">
       <Filter>Juce Modules\juce_graphics\fonts</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\modules\juce_graphics\fonts\juce_SimpleTypeLayout.cpp">
-      <Filter>Juce Modules\juce_graphics\fonts</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_graphics\fonts\juce_AttributedString.cpp">
       <Filter>Juce Modules\juce_graphics\fonts</Filter>
     </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_graphics\fonts\juce_TypeLayout.cpp">
       <Filter>Juce Modules\juce_graphics\fonts</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\modules\juce_graphics\native\juce_win32_Fonts_DWTypeface.cpp">
-      <Filter>Juce Modules\juce_graphics\native</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\modules\juce_graphics\native\juce_win32_Fonts_DWTypeLayout.cpp">
-      <Filter>Juce Modules\juce_graphics\native</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\modules\juce_graphics\native\juce_win32_Fonts_DWTextRenderer.cpp">
+    <ClCompile Include="..\..\JuceLibraryCode\modules\juce_graphics\native\juce_win32_DirectWriteTypeface.cpp">
       <Filter>Juce Modules\juce_graphics\native</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1952,14 +1943,8 @@
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_graphics\fonts\juce_GlyphLayout.h">
       <Filter>Juce Modules\juce_graphics\fonts</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_graphics\fonts\juce_SimpleTypeLayout.h">
-      <Filter>Juce Modules\juce_graphics\fonts</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_graphics\fonts\juce_TypeLayout.h">
       <Filter>Juce Modules\juce_graphics\fonts</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_graphics\native\juce_win32_Fonts_DWTextRenderer.h">
-      <Filter>Juce Modules\juce_graphics\native</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
