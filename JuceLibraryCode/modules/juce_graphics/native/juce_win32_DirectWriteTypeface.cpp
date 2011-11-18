@@ -23,6 +23,31 @@
   ==============================================================================
 */
 
+class SharedDirectWriteFactory  : public DeletedAtShutdown
+{
+public:
+    SharedDirectWriteFactory()
+    {
+        D2D1CreateFactory (D2D1_FACTORY_TYPE_SINGLE_THREADED, d2dFactory.resetAndGetPointerAddress());
+        DWriteCreateFactory (DWRITE_FACTORY_TYPE_SHARED, __uuidof (IDWriteFactory), (IUnknown**) directWriteFactory.resetAndGetPointerAddress());
+
+        if (directWriteFactory != nullptr)
+            directWriteFactory->GetSystemFontCollection (systemFonts.resetAndGetPointerAddress());
+    }
+
+    ~SharedDirectWriteFactory()
+    {
+        clearSingletonInstance();
+    }
+
+    juce_DeclareSingleton (SharedDirectWriteFactory, false);
+
+    ComSmartPtr <ID2D1Factory> d2dFactory;
+    ComSmartPtr <IDWriteFactory> directWriteFactory;
+    ComSmartPtr <IDWriteFontCollection> systemFonts;
+};
+
+juce_ImplementSingleton (SharedDirectWriteFactory)
 
 class WindowsDirectWriteTypeface  : public Typeface
 {

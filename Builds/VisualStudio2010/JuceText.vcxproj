@@ -916,7 +916,6 @@
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_graphics\fonts\juce_AttributedString.h" />
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_graphics\fonts\juce_GlyphLayout.h" />
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_graphics\fonts\juce_TypeLayout.h" />
-    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_graphics\native\juce_win32_DirectWrite.h" />
     <ClInclude Include="..\..\Source\MainWindow.h" />
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_core\text\juce_CharacterFunctions.h" />
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_core\text\juce_CharPointer_ASCII.h" />

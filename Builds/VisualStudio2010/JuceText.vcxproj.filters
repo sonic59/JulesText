@@ -1949,8 +1949,5 @@
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_graphics\fonts\juce_TypeLayout.h">
       <Filter>Juce Modules\juce_graphics\fonts</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_graphics\native\juce_win32_DirectWrite.h">
-      <Filter>Juce Modules\juce_graphics\native</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>
