@@ -324,9 +324,8 @@ namespace DirectWriteTypeLayout
 
 void GlyphLayout::setText (const AttributedString& text)
 {
-   #if 1
-    DirectWriteTypeLayout::createLayout (*this, text);
-   #else
-    createStandardLayout (text);
-   #endif
+    if (SharedDirectWriteFactory::getInstance()->isAvailable)
+        DirectWriteTypeLayout::createLayout (*this, text);
+    else
+        createStandardLayout (text);
 }

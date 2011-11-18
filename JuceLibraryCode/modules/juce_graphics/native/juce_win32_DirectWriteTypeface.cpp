@@ -26,13 +26,33 @@
 class SharedDirectWriteFactory  : public DeletedAtShutdown
 {
 public:
-    SharedDirectWriteFactory()
+    SharedDirectWriteFactory() : isAvailable(false)
     {
-        D2D1CreateFactory (D2D1_FACTORY_TYPE_SINGLE_THREADED, d2dFactory.resetAndGetPointerAddress());
-        DWriteCreateFactory (DWRITE_FACTORY_TYPE_SHARED, __uuidof (IDWriteFactory), (IUnknown**) directWriteFactory.resetAndGetPointerAddress());
+        bool result = direct2dDll.open("D2d1.dll");
+        if (result)
+            result = directWriteDll.open("Dwrite.dll");
+        if (result)
+        {
+            JUCE_DLL_FUNCTION (D2D1CreateFactory, d2d1CreateFactory, HRESULT, direct2dDll, (D2D1_FACTORY_TYPE, REFIID, D2D1_FACTORY_OPTIONS*, void**))
+            if (d2d1CreateFactory == nullptr)
+                return;
+            JUCE_DLL_FUNCTION (DWriteCreateFactory, dWriteCreateFactory, HRESULT, directWriteDll, (DWRITE_FACTORY_TYPE, REFIID, IUnknown**))
+            if (dWriteCreateFactory == nullptr)
+                return;
 
-        if (directWriteFactory != nullptr)
-            directWriteFactory->GetSystemFontCollection (systemFonts.resetAndGetPointerAddress());
+            D2D1_FACTORY_OPTIONS options;
+            options.debugLevel = D2D1_DEBUG_LEVEL_NONE;
+            d2d1CreateFactory(D2D1_FACTORY_TYPE_SINGLE_THREADED, __uuidof (ID2D1Factory), &options,(void **) d2dFactory.resetAndGetPointerAddress());
+            if (d2dFactory == nullptr)
+                return;
+            dWriteCreateFactory (DWRITE_FACTORY_TYPE_SHARED, __uuidof (IDWriteFactory), (IUnknown**) directWriteFactory.resetAndGetPointerAddress());
+
+            if (directWriteFactory != nullptr)
+                directWriteFactory->GetSystemFontCollection (systemFonts.resetAndGetPointerAddress());
+            else
+                return;
+            isAvailable = true;
+        }
     }
 
     ~SharedDirectWriteFactory()
@@ -45,6 +65,9 @@ public:
     ComSmartPtr <ID2D1Factory> d2dFactory;
     ComSmartPtr <IDWriteFactory> directWriteFactory;
     ComSmartPtr <IDWriteFontCollection> systemFonts;
+    DynamicLibrary direct2dDll;
+    DynamicLibrary directWriteDll;
+    bool isAvailable;
 };
 
 juce_ImplementSingleton (SharedDirectWriteFactory)
